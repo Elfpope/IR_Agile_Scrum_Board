@@ -1,3 +1,4 @@
+package scrumBoardManagement;
 
 public class ScrumBoardApplication {
 

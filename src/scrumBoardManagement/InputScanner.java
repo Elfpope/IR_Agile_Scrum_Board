@@ -1,3 +1,4 @@
+package scrumBoardManagement;
 import java.util.Scanner;
 
 public class InputScanner {

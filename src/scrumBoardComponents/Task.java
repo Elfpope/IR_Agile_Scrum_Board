@@ -1,3 +1,7 @@
+package scrumBoardComponents;
+
+import scrumBoardManagement.IDGenerator;
+import scrumBoardManagement.IDType;
 
 public class Task {
 	private String taskID;

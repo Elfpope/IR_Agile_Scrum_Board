@@ -1,3 +1,6 @@
+package scrumBoardManagement;
+
+
 public class IDGenerator {
 	private static int storyCounter = 0;
 	private static int taskCounter = 0;

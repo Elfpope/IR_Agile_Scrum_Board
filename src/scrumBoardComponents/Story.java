@@ -1,5 +1,9 @@
+package scrumBoardComponents;
 import java.util.ArrayList;
 import java.util.List;
+
+import scrumBoardManagement.IDGenerator;
+import scrumBoardManagement.IDType;
 
 
 public class Story {
