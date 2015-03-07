@@ -16,4 +16,39 @@ public class Task {
 		taskStatus = taskStatus.ToDo;
 	}
 
+	public String getTaskID() {
+		return taskID;
+	}
+
+	public String getStoryID() {
+		return storyID;
+	}
+
+	public String getTaskDescription() {
+		return taskDescription;
+	}
+
+	public void setTaskDescription(String taskDescription) {
+		this.taskDescription = taskDescription;
+	}
+
+	public TaskStatus getTaskStatus() {
+		return taskStatus;
+	}
+	
+	public boolean matches(String taskID) {
+		return this.taskID.equals(taskID);
+	}
+
+	public void printTask() {
+		String taskInfo = "";	
+		taskInfo += "\nTaskID - " + taskID + " is associated with ";
+		taskInfo += "StoryID - " + storyID;		
+		System.out.println(taskInfo);		
+	}
+	
+	public boolean taskCompleted(){
+		return taskStatus == TaskStatus.Done;
+	}
+
 }
