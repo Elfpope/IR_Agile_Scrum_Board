@@ -13,7 +13,7 @@ public class Task {
 		taskID = IDGenerator.generateID(IDType.Task);
 		this.storyID = storyID;
 		this.taskDescription = description;
-		taskStatus = taskStatus.ToDo;
+		taskStatus = TaskStatus.To_Do;
 	}
 
 	public String getTaskID() {
@@ -36,19 +36,23 @@ public class Task {
 		return taskStatus;
 	}
 	
+	public void setTaskStatus(TaskStatus status) {
+		this.taskStatus = status;
+	}
+	
 	public boolean matches(String taskID) {
 		return this.taskID.equals(taskID);
 	}
+	
+	public boolean taskCompleted(){
+		return taskStatus == TaskStatus.Done;
+	}	
 
 	public void printTask() {
 		String taskInfo = "";	
 		taskInfo += "\nTaskID - " + taskID + " is associated with ";
 		taskInfo += "StoryID - " + storyID;		
 		System.out.println(taskInfo);		
-	}
-	
-	public boolean taskCompleted(){
-		return taskStatus == TaskStatus.Done;
 	}
 
 }

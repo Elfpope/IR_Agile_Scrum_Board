@@ -14,22 +14,6 @@ public class Board {
 		deletedStories = new ArrayList<Story>();
 	}
 
-	public void printMenu() {
-		String menu = "";
-		menu += "\nAgile Scrumb Broad Menu -- ";
-		menu += "\n    1: Create a story";
-		menu += "\n    2: List stories";
-		menu += "\n    3: Delete a story";
-		menu += "\n    4: Complete a story";
-		menu += "\n    5: Create a task";
-		menu += "\n    6: List tasks";
-		menu += "\n    7: Delete a task";
-		menu += "\n    8: Move a task";
-		menu += "\n    9: Update a task";
-		menu += "\n    0: Exit";
-		System.out.println(menu);
-	}
-
 	public Story findActiveStory(String storyID) {
 		for (Story story : activeStories) {
 			if (story.matches(storyID))
@@ -61,20 +45,20 @@ public class Board {
 			System.out.println("  No story in the board. ");
 		} else {
 			if (!activeStories.isEmpty()) {
-				for (Story story : activeStories) {
-					System.out.println("  Active Stories List : ");
+				System.out.println("\n  Active Stories List : ");
+				for (Story story : activeStories) {					
 					story.printStory();
 				}
 			}
 			if (!completedStories.isEmpty()) {
-				for (Story story : completedStories) {
-					System.out.println("  Completed Stories List : ");
+				System.out.println("\n  Completed Stories List : ");
+				for (Story story : completedStories) {					
 					story.printStory();
 				}
 			}
 			if (!deletedStories.isEmpty()) {
-				for (Story story : deletedStories) {
-					System.out.println("  Deleted Stories List : ");
+				System.out.println("\n  Deleted Stories List : ");
+				for (Story story : deletedStories) {					
 					story.printStory();
 				}
 			}
@@ -108,5 +92,10 @@ public class Board {
 		} else {
 			System.out.println("  Some tasks need to be done before complete a story. ");
 		}
+	}
+
+	public void listTasks(String storyID) {
+		Story story = findActiveStory(storyID);
+		story.listTasks();		
 	}
 }
