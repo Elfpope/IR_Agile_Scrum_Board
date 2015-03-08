@@ -1,6 +1,7 @@
 package scrumBoardManagement;
 
 import scrumBoardComponents.Board;
+import scrumBoardComponents.IDType;
 import scrumBoardComponents.Story;
 import scrumBoardComponents.Task;
 import scrumBoardComponents.TaskStatus;
@@ -8,7 +9,13 @@ import scrumBoardComponents.TaskStatus;
 public class ScrumBoardApplication {
 
 	public static void main(String[] args) {
-		new ScrumBoardApplication();
+		try {
+			new ScrumBoardApplication();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("An unexpected error has arisen. Please investigate.");
+			System.exit(1);
+		}
 	}
 
 	public ScrumBoardApplication() {
@@ -16,11 +23,12 @@ public class ScrumBoardApplication {
 		printMenu();
 		char choice = readChoice();
 		// Choice for exit is 0.
-		while (choice != 0) {
+		while (choice != '0') {
 			execute(board, choice);
 			printMenu();
 			choice = readChoice();
 		}
+		System.out.println("The application is terminated.");
 	}
 
 	private void printMenu() {
@@ -53,7 +61,7 @@ public class ScrumBoardApplication {
 			listStories(board);
 			break; // List stories
 		case '3':
-			removeActiveStory(board);
+			removeStory(board);
 			break; // Delete a story
 		case '4':
 			completeActiveStory(board);
@@ -86,9 +94,9 @@ public class ScrumBoardApplication {
 			} else {
 				System.out.print("    Please input task ID: ");
 			}
-			ID = InputScanner.nextLine();
-		} while (ID == null);
-		return ID.toUpperCase();
+			ID = InputScanner.nextLine().toUpperCase();
+		} while (!InputScanner.idValid(type, ID));
+		return ID;
 	}
 
 	private String readDescription(IDType type) {
@@ -105,14 +113,10 @@ public class ScrumBoardApplication {
 	}
 
 	private TaskStatus readTaskStatus() {
-		char choice = '0';
-		TaskStatus status = null;
-		do {
-			TaskStatus.printTaskStatus();
-			System.out.print("  Status choice (1~4): ");
-			choice = InputScanner.nextChar();
-			status = charToTaskStatus(choice);
-		} while (choice == '0' || status == null);
+		TaskStatus.printTaskStatus();
+		System.out.print("  Status choice (1~4): ");
+		char choice = InputScanner.nextChar();
+		TaskStatus status = charToTaskStatus(choice);
 		return status;
 	}
 
@@ -151,10 +155,10 @@ public class ScrumBoardApplication {
 		}
 	}
 
-	private void removeActiveStory(Board board) {
+	private void removeStory(Board board) {
 		if (board.anyStoryExists()) {
 			String storyID = readID(IDType.Story);
-			board.removeActiveStory(storyID);
+			board.removeStory(storyID);
 		} else {
 			System.out.println("\tNo story in the board. ");
 		}
@@ -193,7 +197,7 @@ public class ScrumBoardApplication {
 				if (story.anyTaskExists()) {
 					story.listTasks();
 				} else {
-					System.out.println("\tNo task can be found! ");
+					System.out.println("\tNo task in the story ");
 				}
 			} else {
 				System.out.println("\tThe story cannot be found! ");
@@ -208,15 +212,19 @@ public class ScrumBoardApplication {
 			String storyID = readID(IDType.Story);
 			Story story = board.findActiveStory(storyID);
 			if (story != null) {
-				String taskID = readID(IDType.Task);
-				Task task = story.findTask(taskID);
-				if (task != null) {
-					story.removeTask(taskID);
+				if (story.anyTaskExists()){
+					String taskID = readID(IDType.Task);
+					Task task = story.findTask(taskID);
+					if (task != null) {
+						story.removeTask(taskID);
+					} else {
+						System.out.println("\tThe task with the given ID cannot be found! ");
+					}
 				} else {
-					System.out.println("\tThe task cannot be found! ");
-				}
+					System.out.println("\tNo task in the story ");
+				}				
 			} else {
-				System.out.println("\tThe story cannot be found! ");
+				System.out.println("\tThe active story with the given ID cannot be found! ");
 			}
 		} else {
 			System.out.println("\tNo story in the board. ");
@@ -228,31 +236,38 @@ public class ScrumBoardApplication {
 			String storyID = readID(IDType.Story);
 			Story story = board.findActiveStory(storyID);
 			if (story != null) {
-				String taskID = readID(IDType.Task);
-				Task task = story.findTask(taskID);
-				if (task != null) {
-					task.printTaskStatus();
-					TaskStatus originalStatus = task.getTaskStatus();
-					TaskStatus newStatus = readTaskStatus();
-					while (!TaskStatus.statusTransitionCorrect(originalStatus,
-							newStatus)) {
-						System.out.println("\tTask " + taskID
-								+ " cannot move from "
-								+ originalStatus.toString() + " to "
-								+ newStatus.toString()
-								+ "\n\tPlease reselect your choice.");
+				if (story.anyTaskExists()){
+					String taskID = readID(IDType.Task);
+					Task task = story.findTask(taskID);
+					if (task != null) {
 						task.printTaskStatus();
-						newStatus = readTaskStatus();
+						TaskStatus originalStatus = task.getTaskStatus();
+						if (originalStatus == TaskStatus.Done) {
+							System.out.println("\tThe task " + taskID 
+									+ " has been completed and can no longer be moved.");
+						} else {
+							TaskStatus newStatus = readTaskStatus();
+							if (TaskStatus.statusTransitionCorrect(originalStatus,
+									newStatus)) {
+								task.setTaskStatus(newStatus);
+								System.out.println("\tThe task " + taskID
+										+ " has moved from " + originalStatus.toString()
+										+ " to " + newStatus.toString());
+							} else {
+								System.out.println("\tIt's not a proper procedure to move "
+										+ "Task " + taskID + " from "
+										+ originalStatus.toString() + " to "
+										+ newStatus.toString());	
+							}
+						}					
+					} else {
+						System.out.println("\tThe task with the given ID cannot be found!  ");
 					}
-					task.setTaskStatus(newStatus);
-					System.out.println("\tThe task " + taskID
-							+ " has moved from " + originalStatus.toString()
-							+ " to " + newStatus.toString());
 				} else {
-					System.out.println("\tThe task cannot be found! ");
+					System.out.println("\tNo task in the story ");
 				}
 			} else {
-				System.out.println("\tThe story cannot be found! ");
+				System.out.println("\tThe active story with the given ID cannot be found! ");
 			}
 		} else {
 			System.out.println("\tNo story in the board. ");
@@ -264,16 +279,22 @@ public class ScrumBoardApplication {
 			String storyID = readID(IDType.Story);
 			Story story = board.findActiveStory(storyID);
 			if (story != null) {
-				String taskID = readID(IDType.Task);
-				Task task = story.findTask(taskID);
-				if (task != null) {
-					String newDescription = readDescription(IDType.Task);
-					task.setTaskDescription(newDescription);
+				if (story.anyTaskExists()){
+					String taskID = readID(IDType.Task);
+					Task task = story.findTask(taskID);
+					if (task != null) {
+						String newDescription = readDescription(IDType.Task);
+						task.setTaskDescription(newDescription);
+						System.out.println("\tThe task " + taskID + " is updated with new description: "
+								+ "\n\t  " + task.getTaskDescription());
+					} else {
+						System.out.println("\tThe task with the given ID cannot be found! ");
+					}
 				} else {
-					System.out.println("\tThe task cannot be found! ");
+					System.out.println("\tNo task in the story ");
 				}
 			} else {
-				System.out.println("\tThe story cannot be found! ");
+				System.out.println("\tThe active story with the given ID cannot be found! ");
 			}
 		} else {
 			System.out.println("\tNo story in the board. ");

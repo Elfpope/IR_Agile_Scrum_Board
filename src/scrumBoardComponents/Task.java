@@ -1,7 +1,5 @@
 package scrumBoardComponents;
 
-import scrumBoardManagement.IDGenerator;
-import scrumBoardManagement.IDType;
 
 public class Task {
 	private String taskID;
@@ -56,7 +54,7 @@ public class Task {
 	}
 
 	public void printTaskStatus() {
-		System.out.println("TaskID " + taskID + " current status is "
+		System.out.println("\nTaskID " + taskID + " current status is "
 				+ taskStatus.toString() + ".");
 	}
 

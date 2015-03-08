@@ -1,5 +1,4 @@
-package scrumBoardManagement;
-
+package scrumBoardComponents;
 
 public class IDGenerator {
 	private static int storyCounter = 0;
@@ -16,16 +15,5 @@ public class IDGenerator {
 			taskCounter++;
 		}
 		return ID;
-	}
-	public static boolean idValid(IDType idType, String id){
-		boolean result = false;
-		char firstChar = id.charAt(0);
-		String remainder = id.substring(1); 
-		if (idType == IDType.Story) {
-			if (Character.valueOf(firstChar).compareTo('S') == 0);
-		} else if (idType == IDType.Task) {
-
-		} 
-		return result;
 	}
 }

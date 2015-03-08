@@ -20,6 +20,14 @@ public class Board {
 		return null;
 	}
 
+	public Story findCompletedStory(String storyID) {
+		for (Story story : completedStories) {
+			if (story.matches(storyID))
+				return story;
+		}
+		return null;
+	}
+
 	public boolean activeStoryExists(String storyID) {
 		for (Story story : activeStories) {
 			if (story.matches(storyID))
@@ -57,21 +65,32 @@ public class Board {
 		}
 	}
 
-	public void removeActiveStory(String storyID) {
+	// remove either active or completed story
+	public void removeStory(String storyID) {
 		Story story = findActiveStory(storyID);
 		if (story != null) {
-			activeStories.remove(story);
-			System.out.println("\tStory " + story.getStoryID()
-					+ " is deleted now.");
+			removeStoryFromList(story, activeStories);
+			return;
 		} else {
-			System.out.println("\tNo such story. ");
+			story = findCompletedStory(storyID);
+			if (story != null) {
+				removeStoryFromList(story, completedStories);
+				return;
+			}
 		}
+		System.out.println("\tThe story cannot be found. ");
+	}
+
+	private void removeStoryFromList(Story story, List<Story> stories) {
+		stories.remove(story);
+		System.out
+				.println("\tStory " + story.getStoryID() + " is deleted now.");
 	}
 
 	public void completeActiveStory(String storyID) {
 		Story story = findActiveStory(storyID);
 		if (story == null) {
-			System.out.println("  No such story. ");
+			System.out.println("  No such active story to be completed. ");
 		} else if (story.allTasksCompleted()) {
 			activeStories.remove(story);
 			completedStories.add(story);

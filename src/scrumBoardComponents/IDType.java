@@ -1,4 +1,4 @@
-package scrumBoardManagement;
+package scrumBoardComponents;
 
 public enum IDType {
 	Story,
