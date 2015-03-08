@@ -50,7 +50,7 @@ public class ScrumBoardApplication {
 			addActiveStory(board);
 			break; // Create a story
 		case '2':
-			board.listStories();
+			listStories(board);
 			break; // List stories
 		case '3':
 			removeActiveStory(board);
@@ -74,44 +74,51 @@ public class ScrumBoardApplication {
 			updateTask(board);
 			break; // Update a task
 		default:
-			System.out.println("    Invalid choice");
+			System.out.println("    No such choice");
 		}
 	}
 
-	private void updateTask(Board board) {
-		String storyID = readID(IDType.Story);
-		Story story = board.findActiveStory(storyID);
-		//if not story found
-		String taskID = readID(IDType.Task);
-		String newDescription = readDescription(IDType.Task);
-		story.updateTask(taskID, newDescription);	
+	private String readID(IDType type) {
+		String ID = null;
+		do {
+			if (type == IDType.Story) {
+				System.out.print("    Please input story ID: ");
+			} else {
+				System.out.print("    Please input task ID: ");
+			}
+			ID = InputScanner.nextLine();
+		} while (ID == null);
+		return ID.toUpperCase();
 	}
 
-	private void moveTask(Board board) {
-		String storyID = readID(IDType.Story);
-		Story story = board.findActiveStory(storyID);
-		String taskID = readID(IDType.Task);
-		TaskStatus status = readTaskStatus();
-		story.changeTaskStatus(taskID, status);	
+	private String readDescription(IDType type) {
+		String description = null;
+		do {
+			if (type == IDType.Story) {
+				System.out.print("    Please input story description: ");
+			} else {
+				System.out.print("    Please input task description: ");
+			}
+			description = InputScanner.nextLine();
+		} while (description == null);
+		return description;
 	}
 
 	private TaskStatus readTaskStatus() {
-		TaskStatus.printTaskStatus();
-		System.out.print("  Status choice (1~4): ");
-		char choice = InputScanner.nextChar();
-		TaskStatus status = charToTaskStatus(choice);
-		while (status == null){
+		char choice = '0';
+		TaskStatus status = null;
+		do {
 			TaskStatus.printTaskStatus();
 			System.out.print("  Status choice (1~4): ");
 			choice = InputScanner.nextChar();
 			status = charToTaskStatus(choice);
-		}
+		} while (choice == '0' || status == null);
 		return status;
 	}
-	
-	private TaskStatus charToTaskStatus(char choice){
+
+	private TaskStatus charToTaskStatus(char choice) {
 		TaskStatus status = null;
-		switch(choice){
+		switch (choice) {
 		case '1':
 			status = TaskStatus.To_Do;
 			break;
@@ -130,57 +137,146 @@ public class ScrumBoardApplication {
 		return status;
 	}
 
-	private void deleteTask(Board board) {
-		String storyID = readID(IDType.Story);
-		Story story = board.findActiveStory(storyID);
-		String taskID = readID(IDType.Task);
-		story.removeTask(taskID);	
-	}
-
-	private void listTasks(Board board) {
-		String storyID = readID(IDType.Story);
-		board.listTasks(storyID);
-	}
-
-	private void creatTask(Board board) {
-		String storyID = readID(IDType.Story);
-		Story story = board.findActiveStory(storyID);
-		String taskDescription = readDescription(IDType.Task);
-		Task task = new Task(storyID, taskDescription);
-		story.addTask(task);		
-	}
-
-	private void completeActiveStory(Board board) {
-		String storyID = readID(IDType.Story);
-		board.completeActiveStory(storyID);		
-	}
-
-	private String readID(IDType type) {
-		if (type == IDType.Story) {
-			System.out.print("  Please input story ID: ");
-		} else {
-			System.out.print("  Please input task ID: ");
-		}
-		return InputScanner.nextLine();
-	}
-	
-	private String readDescription(IDType type) {
-		if (type == IDType.Story){
-			System.out.print("  Please input story description: ");
-		} else {
-			System.out.print("  Please input task description: ");
-		}		
-		return InputScanner.nextLine();
-	}
-
 	private void addActiveStory(Board board) {
 		String description = readDescription(IDType.Story);
 		Story story = new Story(description);
 		board.addActiveStory(story);
 	}
 
-	private void removeActiveStory(Board board){
-		String storyID = readID(IDType.Story);
-		board.removeActiveStory(storyID);
+	private void listStories(Board board) {
+		if (board.anyStoryExists()) {
+			board.listStories();
+		} else {
+			System.out.println("\tNo story in the board. ");
+		}
+	}
+
+	private void removeActiveStory(Board board) {
+		if (board.anyStoryExists()) {
+			String storyID = readID(IDType.Story);
+			board.removeActiveStory(storyID);
+		} else {
+			System.out.println("\tNo story in the board. ");
+		}
+	}
+
+	private void completeActiveStory(Board board) {
+		if (board.anyStoryExists()) {
+			String storyID = readID(IDType.Story);
+			board.completeActiveStory(storyID);
+		} else {
+			System.out.println("\tNo story in the board. ");
+		}
+	}
+
+	private void creatTask(Board board) {
+		if (board.anyStoryExists()) {
+			String storyID = readID(IDType.Story);
+			Story story = board.findActiveStory(storyID);
+			if (story != null) {
+				String taskDescription = readDescription(IDType.Task);
+				Task task = new Task(storyID, taskDescription);
+				story.addTask(task);
+			} else {
+				System.out.println("\tThe story cannot be found! ");
+			}
+		} else {
+			System.out.println("\tNo story in the board. ");
+		}
+	}
+
+	private void listTasks(Board board) {
+		if (board.anyStoryExists()) {
+			String storyID = readID(IDType.Story);
+			Story story = board.findActiveStory(storyID);
+			if (story != null) {
+				if (story.anyTaskExists()) {
+					story.listTasks();
+				} else {
+					System.out.println("\tNo task can be found! ");
+				}
+			} else {
+				System.out.println("\tThe story cannot be found! ");
+			}
+		} else {
+			System.out.println("\tNo story in the board. ");
+		}
+	}
+
+	private void deleteTask(Board board) {
+		if (board.anyStoryExists()) {
+			String storyID = readID(IDType.Story);
+			Story story = board.findActiveStory(storyID);
+			if (story != null) {
+				String taskID = readID(IDType.Task);
+				Task task = story.findTask(taskID);
+				if (task != null) {
+					story.removeTask(taskID);
+				} else {
+					System.out.println("\tThe task cannot be found! ");
+				}
+			} else {
+				System.out.println("\tThe story cannot be found! ");
+			}
+		} else {
+			System.out.println("\tNo story in the board. ");
+		}
+	}
+
+	private void moveTask(Board board) {
+		if (board.anyStoryExists()) {
+			String storyID = readID(IDType.Story);
+			Story story = board.findActiveStory(storyID);
+			if (story != null) {
+				String taskID = readID(IDType.Task);
+				Task task = story.findTask(taskID);
+				if (task != null) {
+					task.printTaskStatus();
+					TaskStatus originalStatus = task.getTaskStatus();
+					TaskStatus newStatus = readTaskStatus();
+					while (!TaskStatus.statusTransitionCorrect(originalStatus,
+							newStatus)) {
+						System.out.println("\tTask " + taskID
+								+ " cannot move from "
+								+ originalStatus.toString() + " to "
+								+ newStatus.toString()
+								+ "\n\tPlease reselect your choice.");
+						task.printTaskStatus();
+						newStatus = readTaskStatus();
+					}
+					task.setTaskStatus(newStatus);
+					System.out.println("\tThe task " + taskID
+							+ " has moved from " + originalStatus.toString()
+							+ " to " + newStatus.toString());
+				} else {
+					System.out.println("\tThe task cannot be found! ");
+				}
+			} else {
+				System.out.println("\tThe story cannot be found! ");
+			}
+		} else {
+			System.out.println("\tNo story in the board. ");
+		}
+	}
+
+	private void updateTask(Board board) {
+		if (board.anyStoryExists()) {
+			String storyID = readID(IDType.Story);
+			Story story = board.findActiveStory(storyID);
+			if (story != null) {
+				String taskID = readID(IDType.Task);
+				Task task = story.findTask(taskID);
+				if (task != null) {
+					String newDescription = readDescription(IDType.Task);
+					task.setTaskDescription(newDescription);
+				} else {
+					System.out.println("\tThe task cannot be found! ");
+				}
+			} else {
+				System.out.println("\tThe story cannot be found! ");
+			}
+		} else {
+			System.out.println("\tNo story in the board. ");
+		}
 	}
 }

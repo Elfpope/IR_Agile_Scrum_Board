@@ -17,4 +17,15 @@ public class IDGenerator {
 		}
 		return ID;
 	}
+	public static boolean idValid(IDType idType, String id){
+		boolean result = false;
+		char firstChar = id.charAt(0);
+		String remainder = id.substring(1); 
+		if (idType == IDType.Story) {
+			if (Character.valueOf(firstChar).compareTo('S') == 0);
+		} else if (idType == IDType.Task) {
+
+		} 
+		return result;
+	}
 }

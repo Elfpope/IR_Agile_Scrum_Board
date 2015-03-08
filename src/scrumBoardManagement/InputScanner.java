@@ -6,22 +6,20 @@ public class InputScanner {
 	private static Scanner inputScanner = new Scanner(System.in);
 
 	public static String nextLine() {
-		return inputScanner.nextLine();
+		String input = inputScanner.nextLine();
+		while (input.isEmpty()){
+			System.out.println("\tNo input is detected, and please retry.");
+			input = inputScanner.nextLine();
+		}
+		return input;
 	}
 
 	public static char nextChar() {
-		return inputScanner.nextLine().charAt(0);
-	}
-
-	public static int nextInt() {
-		int i = inputScanner.nextInt();
-		inputScanner.nextLine();
-		return i;
-	}
-
-	public static double nextDouble() {
-		double d = inputScanner.nextDouble();
-		inputScanner.nextLine();
-		return d;
+		String input = inputScanner.nextLine();
+		while (input.isEmpty() || input.length() > 1){
+			System.out.println("\tInvalid input has been detected, and please retry.");
+			input = inputScanner.nextLine();
+		}
+		return input.charAt(0);
 	}
 }
