@@ -88,6 +88,7 @@ public class ScrumBoardApplication {
 
 	private String readID(IDType type) {
 		String ID = null;
+		boolean resultOfIDValification = false;
 		do {
 			if (type == IDType.Story) {
 				System.out.print("    Please input story ID: ");
@@ -95,7 +96,13 @@ public class ScrumBoardApplication {
 				System.out.print("    Please input task ID: ");
 			}
 			ID = InputScanner.nextLine().toUpperCase();
-		} while (!InputScanner.idValid(type, ID));
+			resultOfIDValification = InputScanner.idValid(type, ID);
+			if(!resultOfIDValification){
+				System.out.println("    Input ID is not valid. "
+								 + "\n      Story ID needs to start with 'S' or 's' then is followed by an integer."
+								 + "\n      Task ID needs to start with 'T' or 't' then is followed by an integer.");
+			}
+		} while (!resultOfIDValification);
 		return ID;
 	}
 

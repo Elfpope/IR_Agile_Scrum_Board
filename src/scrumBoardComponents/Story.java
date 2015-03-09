@@ -67,6 +67,7 @@ public class Story {
 	public void addTask(Task task) {
 		tasks.add(task);
 		System.out.println("\tTask " + task.getTaskID() + " is created now.");
+		task.printTaskStatus();
 	}
 
 	public void removeTask(String taskID) {

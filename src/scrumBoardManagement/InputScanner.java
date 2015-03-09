@@ -47,7 +47,7 @@ public class InputScanner {
 			int idNum = Integer.parseInt(numericString);
 			return idNum >= 0;
 		} catch (IllegalArgumentException e) {
-			System.out.println("  Invalid ID input");
+			System.out.println("    The input number is not an integer");
 		}
 		return false;
 	}

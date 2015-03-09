@@ -50,11 +50,12 @@ public class Task {
 		String taskInfo = "";
 		taskInfo += "\n\tTaskID - " + taskID + " is associated with ";
 		taskInfo += "StoryID - " + storyID;
+		taskInfo += " and its current status is" + taskStatus.toString() + ".";
 		System.out.println(taskInfo);
 	}
 
 	public void printTaskStatus() {
-		System.out.println("\nTaskID " + taskID + " current status is "
+		System.out.println("\tTaskID " + taskID + " current status is "
 				+ taskStatus.toString() + ".");
 	}
 
