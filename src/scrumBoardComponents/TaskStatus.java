@@ -36,4 +36,25 @@ public enum TaskStatus {
 		} else
 			return true;
 	}
+	
+	public static TaskStatus charToTaskStatus(char choice) {
+		TaskStatus status = null;
+		switch (choice) {
+		case '1':
+			status = TaskStatus.To_Do;
+			break;
+		case '2':
+			status = TaskStatus.In_Process;
+			break;
+		case '3':
+			status = TaskStatus.To_Verify;
+			break;
+		case '4':
+			status = TaskStatus.Done;
+			break;
+		default:
+			System.out.println("    Invalid choice");
+		}
+		return status;
+	}
 }

@@ -35,16 +35,6 @@ public class Task {
 	public TaskStatus getTaskStatus() {
 		return taskStatus;
 	}
-	
-	public boolean isDone()	{
-		boolean result = false;
-		if (taskStatus == TaskStatus.Done){
-			result = true;	
-			System.out.println("\tThe task " + taskID 
-					+ " has been completed so its status can no longer be changed.");			
-		}
-		return result;
-	}
 
 	public void moveTask(TaskStatus status) {
 		TaskStatus oldStatus = taskStatus;
@@ -58,7 +48,7 @@ public class Task {
 		return this.taskID.equals(taskID);
 	}
 
-	public boolean taskCompleted() {
+	public boolean isTaskCompleted() {
 		return taskStatus == TaskStatus.Done;
 	}
 

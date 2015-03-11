@@ -35,7 +35,7 @@ public class Story {
 
 	public boolean allTasksCompleted() {
 		for (Task task : tasks) {
-			if (!task.taskCompleted()) {
+			if (!task.isTaskCompleted()) {
 				return false;
 			}
 		}

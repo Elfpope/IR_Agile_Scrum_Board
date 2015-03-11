@@ -7,7 +7,8 @@ import scrumBoardComponents.IDType;
 public class InputScanner {
 
 	private static Scanner inputScanner = new Scanner(System.in);
-
+	
+	//ask for input, and it has to be not null 
 	public static String nextLine() {
 		String input = inputScanner.nextLine();
 		while (input.isEmpty()) {
@@ -17,6 +18,7 @@ public class InputScanner {
 		return input;
 	}
 
+	//ask for a single character input, and it has to be not null and one char only
 	public static char nextChar() {
 		String input = inputScanner.nextLine();
 		while (input.isEmpty() || input.length() > 1) {

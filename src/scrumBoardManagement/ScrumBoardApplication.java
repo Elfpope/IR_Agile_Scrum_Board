@@ -13,7 +13,8 @@ public class ScrumBoardApplication {
 			new ScrumBoardApplication();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("An unexpected error has arisen. Please investigate.");
+			System.out
+					.println("An unexpected error has arisen. Please investigate.");
 			System.exit(1);
 		}
 	}
@@ -85,10 +86,10 @@ public class ScrumBoardApplication {
 			System.out.println("    No such choice");
 		}
 	}
-
+	
+	//Read in user input for ID until it is valid
 	private String readID(IDType type) {
 		String ID = null;
-		boolean resultOfIDValification = false;
 		do {
 			if (type == IDType.Story) {
 				System.out.print("    Please input story ID: ");
@@ -96,21 +97,18 @@ public class ScrumBoardApplication {
 				System.out.print("    Please input task ID: ");
 			}
 			ID = InputScanner.nextLine().toUpperCase();
-			resultOfIDValification = InputScanner.idValid(type, ID);
-		} while (!resultOfIDValification);
+		} while (!InputScanner.idValid(type, ID));
 		return ID;
 	}
 
 	private String readDescription(IDType type) {
 		String description = null;
-		do {
-			if (type == IDType.Story) {
-				System.out.print("    Please input story description: ");
-			} else {
-				System.out.print("    Please input task description: ");
-			}
-			description = InputScanner.nextLine();
-		} while (description == null);
+		if (type == IDType.Story) {
+			System.out.print("    Please input story description: ");
+		} else {
+			System.out.print("    Please input task description: ");
+		}
+		description = InputScanner.nextLine();
 		return description;
 	}
 
@@ -118,28 +116,7 @@ public class ScrumBoardApplication {
 		TaskStatus.printTaskStatus();
 		System.out.print("  Status choice (1~4): ");
 		char choice = InputScanner.nextChar();
-		TaskStatus status = charToTaskStatus(choice);
-		return status;
-	}
-
-	private TaskStatus charToTaskStatus(char choice) {
-		TaskStatus status = null;
-		switch (choice) {
-		case '1':
-			status = TaskStatus.To_Do;
-			break;
-		case '2':
-			status = TaskStatus.In_Process;
-			break;
-		case '3':
-			status = TaskStatus.To_Verify;
-			break;
-		case '4':
-			status = TaskStatus.Done;
-			break;
-		default:
-			System.out.println("    Invalid choice");
-		}
+		TaskStatus status = TaskStatus.charToTaskStatus(choice);
 		return status;
 	}
 
@@ -150,6 +127,7 @@ public class ScrumBoardApplication {
 	}
 
 	private void listStories(Board board) {
+		//only list stories if they exist
 		if (board.anyStoryExists()) {
 			board.listStories();
 		}
@@ -185,10 +163,10 @@ public class ScrumBoardApplication {
 		if (board.anyStoryExists()) {
 			String storyID = readID(IDType.Story);
 			Story story = board.findActiveStory(storyID);
-			if (story != null) {
-				if (story.anyTaskExists()) {
-					story.listTasks();
-				}
+			/* Lazy evaluation in the logic operation
+			   story.anyTaskExists() will only be called if story is not null*/	
+			if (story != null && story.anyTaskExists()) {
+				story.listTasks();			
 			}
 		}
 	}
@@ -197,14 +175,12 @@ public class ScrumBoardApplication {
 		if (board.anyStoryExists()) {
 			String storyID = readID(IDType.Story);
 			Story story = board.findActiveStory(storyID);
-			if (story != null) {
-				if (story.anyTaskExists()){
-					String taskID = readID(IDType.Task);
-					Task task = story.findTask(taskID);
-					if (task != null) {
-						story.removeTask(taskID);
-					}
-				}				
+			if (story != null && story.anyTaskExists()) {
+				String taskID = readID(IDType.Task);
+				Task task = story.findTask(taskID);
+				if (task != null) {
+					story.removeTask(taskID);
+				}
 			}
 		}
 	}
@@ -213,28 +189,28 @@ public class ScrumBoardApplication {
 		if (board.anyStoryExists()) {
 			String storyID = readID(IDType.Story);
 			Story story = board.findActiveStory(storyID);
-			if (story != null) {
-				if (story.anyTaskExists()){
-					String taskID = readID(IDType.Task);
-					Task task = story.findTask(taskID);
-					if (task != null) {
-						task.printTaskStatus();
-						TaskStatus originalStatus = task.getTaskStatus();
-						if (!task.isDone()) {
-							TaskStatus newStatus = readTaskStatus();
-							if (TaskStatus.statusTransitionCorrect(originalStatus,
-									newStatus)) {
-								task.moveTask(newStatus);
-							} else {
-								System.out.println("\tIt's not a proper procedure to move "
-										+ "Task " + taskID + " from "
-										+ originalStatus.toString() + " to "
-										+ newStatus.toString());	
-							}
-						}					
+			if (story != null && story.anyTaskExists()) {
+				String taskID = readID(IDType.Task);
+				Task task = story.findTask(taskID);
+				if (task != null) {
+					task.printTaskStatus();
+					TaskStatus originalStatus = task.getTaskStatus();
+					if (!task.isTaskCompleted()) {
+						TaskStatus newStatus = readTaskStatus();
+						//only move the task if it is correct to change into the new status 
+						if (TaskStatus.statusTransitionCorrect(originalStatus, newStatus)) {
+							task.moveTask(newStatus);
+						} else {
+							String warnMsg = "\tIt's not a proper procedure to move " + "Task "	+ taskID;
+								   warnMsg += " from " + originalStatus.toString() + " to " + newStatus.toString();
+							System.out.println(warnMsg);
+						}
+					}else {
+						System.out.println("\tThe task " + taskID 
+								+ " has been completed so its status can no longer be changed.");	
 					}
 				}
-			}
+			}		
 		}
 	}
 
@@ -242,14 +218,12 @@ public class ScrumBoardApplication {
 		if (board.anyStoryExists()) {
 			String storyID = readID(IDType.Story);
 			Story story = board.findActiveStory(storyID);
-			if (story != null) {
-				if (story.anyTaskExists()){
-					String taskID = readID(IDType.Task);
-					Task task = story.findTask(taskID);
-					if (task != null) {
-						String newDescription = readDescription(IDType.Task);
-						task.updateTaskDescription(newDescription);
-					}
+			if (story != null && story.anyTaskExists()) {
+				String taskID = readID(IDType.Task);
+				Task task = story.findTask(taskID);
+				if (task != null) {
+					String newDescription = readDescription(IDType.Task);
+					task.updateTaskDescription(newDescription);
 				}
 			}
 		}
