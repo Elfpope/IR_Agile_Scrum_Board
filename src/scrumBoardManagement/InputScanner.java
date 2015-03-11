@@ -1,5 +1,7 @@
 package scrumBoardManagement;
+
 import java.util.Scanner;
+
 import scrumBoardComponents.IDType;
 
 public class InputScanner {
@@ -8,7 +10,7 @@ public class InputScanner {
 
 	public static String nextLine() {
 		String input = inputScanner.nextLine();
-		while (input.isEmpty()){
+		while (input.isEmpty()) {
 			System.out.println("\tNo input is detected, and please retry.");
 			input = inputScanner.nextLine();
 		}
@@ -17,22 +19,33 @@ public class InputScanner {
 
 	public static char nextChar() {
 		String input = inputScanner.nextLine();
-		while (input.isEmpty() || input.length() > 1){
-			System.out.println("\tInvalid input has been detected, and please retry.");
+		while (input.isEmpty() || input.length() > 1) {
+			System.out
+					.println("\tInvalid input has been detected, and please retry.");
 			input = inputScanner.nextLine();
 		}
 		return input.charAt(0);
 	}
-	
-	//test if id input is valid
-	public static boolean idValid(IDType idType, String id){
+
+	// test if id input is valid, warningMsg will show if invalid
+	public static boolean idValid(IDType idType, String id) {
+		boolean result = false;
 		char idInitial = id.charAt(0);
-		String numericString = id.substring(1); 
-		return idInitialValid(idType, idInitial) && idNumValid(numericString);
+		String numericString = id.substring(1);
+
+		if (idInitialValid(idType, idInitial) && idNumValid(numericString)) {
+			result = true;
+		} else {
+			String warningMsg = "    Input ID is not valid. "
+					+ "\n      Story ID needs to start with 'S' or 's' then is followed by an integer."
+					+ "\n      Task ID needs to start with 'T' or 't' then is followed by an integer.";
+			System.out.println(warningMsg);
+		}
+		return result;
 	}
-	
-	//test if the first char of id input is either 'S' or 'T'
-	private static boolean idInitialValid(IDType idType, char idInitial){
+
+	// test if the first char of id input is either 'S' or 'T'
+	private static boolean idInitialValid(IDType idType, char idInitial) {
 		if (idType == IDType.Story) {
 			return idInitial == 'S';
 		} else if (idType == IDType.Task) {
@@ -40,9 +53,9 @@ public class InputScanner {
 		}
 		return false;
 	}
-	
-	//test if the remainder of id input is an positive integer.
-	private static boolean idNumValid(String numericString){
+
+	// test if the remainder of id input is an positive integer.
+	private static boolean idNumValid(String numericString) {
 		try {
 			int idNum = Integer.parseInt(numericString);
 			return idNum >= 0;

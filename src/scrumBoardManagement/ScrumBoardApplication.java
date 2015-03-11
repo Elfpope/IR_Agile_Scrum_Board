@@ -97,11 +97,6 @@ public class ScrumBoardApplication {
 			}
 			ID = InputScanner.nextLine().toUpperCase();
 			resultOfIDValification = InputScanner.idValid(type, ID);
-			if(!resultOfIDValification){
-				System.out.println("    Input ID is not valid. "
-								 + "\n      Story ID needs to start with 'S' or 's' then is followed by an integer."
-								 + "\n      Task ID needs to start with 'T' or 't' then is followed by an integer.");
-			}
 		} while (!resultOfIDValification);
 		return ID;
 	}
@@ -157,8 +152,6 @@ public class ScrumBoardApplication {
 	private void listStories(Board board) {
 		if (board.anyStoryExists()) {
 			board.listStories();
-		} else {
-			System.out.println("\tNo story in the board. ");
 		}
 	}
 
@@ -166,8 +159,6 @@ public class ScrumBoardApplication {
 		if (board.anyStoryExists()) {
 			String storyID = readID(IDType.Story);
 			board.removeStory(storyID);
-		} else {
-			System.out.println("\tNo story in the board. ");
 		}
 	}
 
@@ -175,8 +166,6 @@ public class ScrumBoardApplication {
 		if (board.anyStoryExists()) {
 			String storyID = readID(IDType.Story);
 			board.completeActiveStory(storyID);
-		} else {
-			System.out.println("\tNo story in the board. ");
 		}
 	}
 
@@ -188,11 +177,7 @@ public class ScrumBoardApplication {
 				String taskDescription = readDescription(IDType.Task);
 				Task task = new Task(storyID, taskDescription);
 				story.addTask(task);
-			} else {
-				System.out.println("\tThe story cannot be found! ");
 			}
-		} else {
-			System.out.println("\tNo story in the board. ");
 		}
 	}
 
@@ -203,14 +188,8 @@ public class ScrumBoardApplication {
 			if (story != null) {
 				if (story.anyTaskExists()) {
 					story.listTasks();
-				} else {
-					System.out.println("\tNo task in the story ");
 				}
-			} else {
-				System.out.println("\tThe story cannot be found! ");
 			}
-		} else {
-			System.out.println("\tNo story in the board. ");
 		}
 	}
 
@@ -224,17 +203,9 @@ public class ScrumBoardApplication {
 					Task task = story.findTask(taskID);
 					if (task != null) {
 						story.removeTask(taskID);
-					} else {
-						System.out.println("\tThe task with the given ID cannot be found! ");
 					}
-				} else {
-					System.out.println("\tNo task in the story ");
 				}				
-			} else {
-				System.out.println("\tThe active story with the given ID cannot be found! ");
 			}
-		} else {
-			System.out.println("\tNo story in the board. ");
 		}
 	}
 
@@ -249,17 +220,11 @@ public class ScrumBoardApplication {
 					if (task != null) {
 						task.printTaskStatus();
 						TaskStatus originalStatus = task.getTaskStatus();
-						if (originalStatus == TaskStatus.Done) {
-							System.out.println("\tThe task " + taskID 
-									+ " has been completed and can no longer be moved.");
-						} else {
+						if (!task.isDone()) {
 							TaskStatus newStatus = readTaskStatus();
 							if (TaskStatus.statusTransitionCorrect(originalStatus,
 									newStatus)) {
-								task.setTaskStatus(newStatus);
-								System.out.println("\tThe task " + taskID
-										+ " has moved from " + originalStatus.toString()
-										+ " to " + newStatus.toString());
+								task.moveTask(newStatus);
 							} else {
 								System.out.println("\tIt's not a proper procedure to move "
 										+ "Task " + taskID + " from "
@@ -267,17 +232,9 @@ public class ScrumBoardApplication {
 										+ newStatus.toString());	
 							}
 						}					
-					} else {
-						System.out.println("\tThe task with the given ID cannot be found!  ");
 					}
-				} else {
-					System.out.println("\tNo task in the story ");
 				}
-			} else {
-				System.out.println("\tThe active story with the given ID cannot be found! ");
 			}
-		} else {
-			System.out.println("\tNo story in the board. ");
 		}
 	}
 
@@ -291,20 +248,10 @@ public class ScrumBoardApplication {
 					Task task = story.findTask(taskID);
 					if (task != null) {
 						String newDescription = readDescription(IDType.Task);
-						task.setTaskDescription(newDescription);
-						System.out.println("\tThe task " + taskID + " is updated with new description: "
-								+ "\n\t  " + task.getTaskDescription());
-					} else {
-						System.out.println("\tThe task with the given ID cannot be found! ");
+						task.updateTaskDescription(newDescription);
 					}
-				} else {
-					System.out.println("\tNo task in the story ");
 				}
-			} else {
-				System.out.println("\tThe active story with the given ID cannot be found! ");
 			}
-		} else {
-			System.out.println("\tNo story in the board. ");
 		}
 	}
 }

@@ -26,16 +26,32 @@ public class Task {
 		return taskDescription;
 	}
 
-	public void setTaskDescription(String newDescription) {
+	public void updateTaskDescription(String newDescription) {
 		taskDescription = newDescription;
+		System.out.println("\tThe task " + taskID + " is updated with new description: "
+				+ "\n\t  " + taskDescription);
 	}
 
 	public TaskStatus getTaskStatus() {
 		return taskStatus;
 	}
+	
+	public boolean isDone()	{
+		boolean result = false;
+		if (taskStatus == TaskStatus.Done){
+			result = true;	
+			System.out.println("\tThe task " + taskID 
+					+ " has been completed so its status can no longer be changed.");			
+		}
+		return result;
+	}
 
-	public void setTaskStatus(TaskStatus status) {
-		this.taskStatus = status;
+	public void moveTask(TaskStatus status) {
+		TaskStatus oldStatus = taskStatus;
+		taskStatus = status;
+		System.out.println("\tThe task " + taskID
+				+ " has moved from " + oldStatus.toString()
+				+ " to " + taskStatus.toString());
 	}
 
 	public boolean matches(String taskID) {

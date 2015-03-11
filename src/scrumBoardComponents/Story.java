@@ -46,6 +46,7 @@ public class Story {
 		if (!tasks.isEmpty()) {
 			return true;
 		}
+		System.out.println("\tNo task in the story ");
 		return false;
 	}
 
@@ -61,6 +62,7 @@ public class Story {
 			if (task.matches(taskID))
 				return task;
 		}
+		System.out.println("\tThe task with the given ID cannot be found! ");
 		return null;
 	}
 
@@ -75,8 +77,6 @@ public class Story {
 		if (task != null) {
 			tasks.remove(task);
 			System.out.println("\tTask " + taskID + " is deleted now.");
-		} else {
-			System.out.println("\tNo such task. ");
 		}
 	}
 }
