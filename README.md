@@ -20,3 +20,4 @@ javac -d bin -sourcepath src src/scrumBoardManagement/ScrumBoardApplication.java
 
 4. execute
 java -cp bin scrumBoardManagement.ScrumBoardApplication
+

@@ -51,7 +51,6 @@ public class Story {
 	}
 
 	public void listTasks() {
-		System.out.println("\tTask List : ");
 		for (Task task : tasks) {
 			task.printTask();
 		}

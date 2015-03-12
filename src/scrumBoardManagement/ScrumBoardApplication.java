@@ -86,8 +86,8 @@ public class ScrumBoardApplication {
 			System.out.println("    No such choice");
 		}
 	}
-	
-	//Read in user input for ID until it is valid
+
+	// Read in user input for ID until it is valid
 	private String readID(IDType type) {
 		String ID = null;
 		do {
@@ -127,7 +127,7 @@ public class ScrumBoardApplication {
 	}
 
 	private void listStories(Board board) {
-		//only list stories if they exist
+		// only list stories if they exist
 		if (board.anyStoryExists()) {
 			board.listStories();
 		}
@@ -163,10 +163,23 @@ public class ScrumBoardApplication {
 		if (board.anyStoryExists()) {
 			String storyID = readID(IDType.Story);
 			Story story = board.findActiveStory(storyID);
-			/* Lazy evaluation in the logic operation
-			   story.anyTaskExists() will only be called if story is not null*/	
-			if (story != null && story.anyTaskExists()) {
-				story.listTasks();			
+			/*
+			 * find the story from the active story list first,
+			 * if not found, then try the completed story list
+			 */
+			if (story != null) {
+				if (story.anyTaskExists()) {
+					System.out.println("\tTask List of the Active Story: ");
+					story.listTasks();
+				}
+			} else {
+				story = board.findCompletedStory(storyID);
+				if (story != null) {
+					if (story.anyTaskExists()) {
+						System.out.println("\tTask List of the Completed Story: ");
+						story.listTasks();
+					}
+				}
 			}
 		}
 	}
@@ -197,20 +210,26 @@ public class ScrumBoardApplication {
 					TaskStatus originalStatus = task.getTaskStatus();
 					if (!task.isTaskCompleted()) {
 						TaskStatus newStatus = readTaskStatus();
-						//only move the task if it is correct to change into the new status 
-						if (TaskStatus.statusTransitionCorrect(originalStatus, newStatus)) {
+						// only move the task if it is correct to change into
+						// the new status
+						if (TaskStatus.statusTransitionCorrect(originalStatus,
+								newStatus)) {
 							task.moveTask(newStatus);
 						} else {
-							String warnMsg = "\tIt's not a proper procedure to move " + "Task "	+ taskID;
-								   warnMsg += " from " + originalStatus.toString() + " to " + newStatus.toString();
+							String warnMsg = "\tIt's not a proper procedure to move "
+									+ "Task " + taskID;
+							warnMsg += " from " + originalStatus.toString()
+									+ " to " + newStatus.toString();
 							System.out.println(warnMsg);
 						}
-					}else {
-						System.out.println("\tThe task " + taskID 
-								+ " has been completed so its status can no longer be changed.");	
+					} else {
+						System.out
+								.println("\tThe task "
+										+ taskID
+										+ " has been completed so its status can no longer be changed.");
 					}
 				}
-			}		
+			}
 		}
 	}
 

@@ -17,7 +17,8 @@ public class Board {
 			if (story.matches(storyID))
 				return story;
 		}
-		System.out.println("\tNo active story can be found with given StoryID! ");
+		System.out
+				.println("\tNo active story can be found with given StoryID! ");
 		return null;
 	}
 
@@ -26,7 +27,8 @@ public class Board {
 			if (story.matches(storyID))
 				return story;
 		}
-		System.out.println("\tNo completed story can be found with given StoryID! ");
+		System.out
+				.println("\tNo completed story can be found with given StoryID! ");
 		return null;
 	}
 
@@ -71,8 +73,10 @@ public class Board {
 	// remove either active or completed story
 	public void removeStory(String storyID) {
 		Story story = findActiveStory(storyID);
-		/*  try to find a matched story from active story list first
-		    if not found, then try from completed story list */
+		/*
+		 * try to find a matched story from active story list first if not
+		 * found, then try from completed story list
+		 */
 		if (story != null) {
 			removeStoryFromList(story, activeStories);
 		} else {
@@ -91,15 +95,20 @@ public class Board {
 
 	public void completeActiveStory(String storyID) {
 		Story story = findActiveStory(storyID);
-		/* Lazy evaluation in the logic operation
-		   story.allTasksCompleted() will only be called if story is not null*/		 
-		if (story != null && story.allTasksCompleted()) {
-			activeStories.remove(story);
-			completedStories.add(story);
-			System.out.println("  Story " + storyID + " is completed now.");
-		} else {
-			System.out
-					.println("  Some tasks need to be done before complete a story. ");
+		/*
+		 * To print corresponding warning msg, conditions need to 
+		 * split into two if blocks
+		 */
+		if (story != null) {
+			if (story.allTasksCompleted()) {
+				activeStories.remove(story);
+				completedStories.add(story);
+				System.out.println("  Story " + storyID + " is completed now.");
+			} else {
+				System.out
+						.println("  Some tasks need to be done before complete a story. ");
+			}
 		}
+
 	}
 }
